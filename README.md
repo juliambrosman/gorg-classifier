@@ -187,5 +187,6 @@ $ nextflow run BigelowLab/gorg-classifier \
     --nodes NCBI/nodes.dmp \
     --names NCBI/names.dmp \
     --fmi custom_seqs_NCBI.fmi \
-    --annotations custom_seqs.tsv
+    --annotations custom_seqs.tsv \
+    --mode local
 ```
