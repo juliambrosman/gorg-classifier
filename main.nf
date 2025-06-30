@@ -221,6 +221,6 @@ workflow {
         }
     run_kaiju(seqs, nodes, fmi)
     add_taxonomy(run_kaiju.out, nodes, names)
-    /* add_functions(add_taxonomy.out, annotations)
-    summarize_annotations(add_functions.out) */
+    add_functions(add_taxonomy.out, annotations)
+    summarize_annotations(add_functions.out)
 }
