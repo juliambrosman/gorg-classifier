@@ -137,6 +137,7 @@ log.info """
 process run_kaiju {
     tag "$sample"
     cpus params.cpus
+    publishDir path: "${params.outdir}/kaiju"
 
     input:
     tuple val(sample), path(r1), path(r2)
@@ -158,7 +159,7 @@ process run_kaiju {
 
 process add_taxonomy {
     tag "$sample"
-    publishDir path: "${params.outdir}/taxonomy"
+    publishDir path: "${params.outdir}/kaiju"
 
     input:
     tuple val(sample), path(hits)
