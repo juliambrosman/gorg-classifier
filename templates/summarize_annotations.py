@@ -62,7 +62,7 @@ with gzopen(hits_file) as in_fh, open(results_file, "w") as out_fh:
             if not hypothetical:
                 summaries.update(["nonhypothetical"])
 
-        if row["prokka_EC_number"] or row["swissprot_EC_number"]:
+        if row["prokka_EC_number"]:# or row["swissprot_EC_number"]:
             summaries.update(["ec"])
 
     print("Sequences: ", i, file=out_fh)
