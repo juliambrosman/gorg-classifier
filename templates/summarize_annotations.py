@@ -13,7 +13,8 @@ results_file = sample + "_summary.txt"
 
 gzopen = lambda f: gzip.open(f, "rt") if f.endswith(".gz") else open(f)
 levels = ["superkingdom", "phylum", "class", "order", "family", "genus", "species"]
-required = ["prokka_gene", "prokka_EC_number", "prokka_product", "swissprot_gene", "swissprot_EC_number", "swissprot_product"]
+# required = ["prokka_gene", "prokka_EC_number", "prokka_product", "swissprot_gene", "swissprot_EC_number", "swissprot_product"]
+required = ["prokka_gene", "prokka_EC_number", "prokka_product"]
 
 summaries = Counter()
 
@@ -42,9 +43,9 @@ with gzopen(hits_file) as in_fh, open(results_file, "w") as out_fh:
             row["prokka_gene"]
             or row["prokka_EC_number"]
             or row["prokka_product"]
-            or row["swissprot_gene"]
-            or row["swissprot_EC_number"]
-            or row["swissprot_product"]
+            #or row["swissprot_gene"]
+            #or row["swissprot_EC_number"]
+            #or row["swissprot_product"]
         ):
             summaries.update(["function"])
             hypothetical = False
@@ -52,9 +53,9 @@ with gzopen(hits_file) as in_fh, open(results_file, "w") as out_fh:
                 row["prokka_gene"],
                 row["prokka_EC_number"],
                 row["prokka_product"],
-                row["swissprot_gene"],
-                row["swissprot_EC_number"],
-                row["swissprot_product"],
+                #row["swissprot_gene"],
+                #row["swissprot_EC_number"],
+                #row["swissprot_product"],
             ]:
                 if "hypothetical" in assignment:
                     hypothetical = True
