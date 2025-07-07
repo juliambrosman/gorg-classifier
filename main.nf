@@ -237,6 +237,6 @@ workflow {
     run_kaiju(seqs, nodes, fmi)
     add_taxonomy(run_kaiju.out, nodes, names)
     add_functions(add_taxonomy.out, annotations)
-    lineage_counts(add_taxonomy.out) 
+    lineage_counts(add_functions.out) 
     summarize_annotations(add_functions.out)
 }
