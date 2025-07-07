@@ -39,10 +39,10 @@ def process_file(file_path):
 
 def write_lldict_to_tsv(lldict, sample_id, outfile):
     with open(outfile, 'w') as out:
-        out.write("sample_id\tlineage_level\ttaxon\tcount\n")
+        out.write("sample_id\\tlineage_level\\ttaxon\\tcount\\n")
         for level, tax_counts in lldict.items():
             for taxon, count in tax_counts.items():
-                out.write(f"{sample_id}\t{level}\t{taxon}\t{count}\n")
+                out.write(f"{sample_id}\\t{level}\\t{taxon}\\t{count}\\n")
 
 lldict = process_file(hits_file)
 write_lldict_to_tsv(lldict, sample, output_file)
