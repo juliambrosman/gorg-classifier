@@ -212,7 +212,7 @@ process lineage_counts {
 process summarize_annotations {
     tag "$sample"
     publishDir path: "${params.outdir}/summaries"
-    cache false
+    memory '32 GB'
 
     input:
     tuple val(sample), path(hits)
