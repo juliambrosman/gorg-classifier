@@ -1,53 +1,48 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import pandas as pd
-from collections import defaultdict
+import gzip
+import csv
 import os
+import sys
+from collections import defaultdict
 
+# Read sample name and input file path from Nextflow variables
 sample = "$sample"
 hits_file = "$hits"
-results_file = sample + "tax_counts.txt"
+output_file = f"{sample}_tax_counts.txt"
 
 lineage_levels = ['Superkingdom', 'Phylum', 'Class', 'Order',
                   'Family', 'Genus', 'Species']
 
 level_index_map = {lvl: i for i, lvl in enumerate(lineage_levels)}
 
-def extract_lineage_level(lineage_str, level_idx):
-    """Efficiently extract lineage level by index."""
-    if level_idx == 0:
-        return lineage_str.replace(" ","").split(";")[level_idx]
-    
-    else:
-        return ";".join(lineage_str.replace(" ","").split(";")[0:level_idx + 1])
+def parse_lineage(lineage_str, level_idx):
+    """Return full lineage up to the given level."""
+    parts = lineage_str.replace(" ", "").split(";")
+    if not parts or level_idx >= len(parts):
+        return "Unclassified"
+    return ";".join(parts[:level_idx + 1])
 
-def process_file(hits_file, chunksize = 1000000):
+def process_file(file_path):
     lldict = {lvl: defaultdict(int) for lvl in lineage_levels}
-
-    for chunk in pd.read_csv(hits_file, compression='gzip', sep="\t", chunksize=chunksize, 
-                             skiprows=0, names = header):
-        
-        mappedchunk = chunk[chunk['status'] == 'C']
-
-        for level in lineage_levels:
-            idx = level_index_map[level]
-            values = mappedchunk['taxonomic_lineage'].apply(lambda x: extract_lineage_level(x, idx))
-            counts = values.value_counts()
-
-            ldict = lldict[level]
-
-            for taxon, count in counts.items():
-                ldict[taxon] += count
+    with gzip.open(file_path, 'rt') as f:
+        reader = csv.DictReader(f, delimiter='\t')
+        for row in reader:
+            if row['status'] != 'C':
+                continue
+            lineage = row['taxonomic_lineage']
+            for lvl in lineage_levels:
+                idx = level_index_map[lvl]
+                taxon = parse_lineage(lineage, idx)
+                lldict[lvl][taxon] += 1
     return lldict
 
-def lldict_to_dataframe(lldict, sample_id):
-    records = []
-    for level, taxon_dict in lldict.items():
-        for taxon, count in taxon_dict.items():
-            records.append((sample_id, level, taxon, count))
-    return pd.DataFrame(records, columns=['sample_id', 'lineage_level', 'taxon', 'count'])
-
+def write_lldict_to_tsv(lldict, sample_id, outfile):
+    with open(outfile, 'w') as out:
+        out.write("sample_id\tlineage_level\ttaxon\tcount\n")
+        for level, tax_counts in lldict.items():
+            for taxon, count in tax_counts.items():
+                out.write(f"{sample_id}\t{level}\t{taxon}\t{count}\n")
 
 lldict = process_file(hits_file)
-df = lldict_to_dataframe(lldict, sample)
-df.to_csv(file = results_file, sep = "\t")
+write_lldict_to_tsv(lldict, sample, output_file)
