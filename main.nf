@@ -16,6 +16,7 @@ if (params.help) {
     License: Attribution-NonCommercial 4.0 International.
     #### Authors
     Joe Brown <brwnjm@gmail.com>
+    Julia Brown <julia@bigelow.org>
     -----------------------------------------------------------------------
 
     Required arguments
@@ -193,6 +194,20 @@ process add_functions {
     template 'add_functions.py'
 }
 
+process lineage_counts {
+    tag "$sample"
+    publishDir path: "${params.outdir}/summaries"
+    cache false
+
+    input:
+    tuple val(sample), path(hits)
+
+    output:
+    path("${sample}_lineage_counts.txt")
+
+    script:
+    template 'lineage_counts.py'
+}
 
 process summarize_annotations {
     tag "$sample"
@@ -222,5 +237,6 @@ workflow {
     run_kaiju(seqs, nodes, fmi)
     add_taxonomy(run_kaiju.out, nodes, names)
     add_functions(add_taxonomy.out, annotations)
+    lineage_counts(add_taxonomy.out) 
     summarize_annotations(add_functions.out)
 }
