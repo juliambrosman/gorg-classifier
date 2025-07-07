@@ -11,9 +11,6 @@ sample = "$sample"
 hits_file = "$hits"
 output_file = f"{sample}_tax_counts.txt"
 
-lineage_levels = ['Superkingdom', 'Phylum', 'Class', 'Order',
-                  'Family', 'Genus', 'Species']
-
 level_index_map = {lvl: i for i, lvl in enumerate(lineage_levels)}
 
 def parse_lineage(lineage_str, level_idx):
@@ -26,7 +23,7 @@ def parse_lineage(lineage_str, level_idx):
 def process_file(file_path):
     lldict = {lvl: defaultdict(int) for lvl in lineage_levels}
     with gzip.open(file_path, 'rt') as f:
-        reader = csv.DictReader(f, delimiter='\t')
+        reader = csv.DictReader(f, delimiter='\\t')
         for row in reader:
             if row['status'] != 'C':
                 continue
