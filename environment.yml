@@ -7,3 +7,4 @@ dependencies:
   - gawk
   - python=3.7
   - kaiju=1.9.0
+  - pandas
