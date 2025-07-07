@@ -2,8 +2,6 @@
 
 import gzip
 import csv
-import os
-import sys
 from collections import defaultdict
 
 # Read sample name and input file path from Nextflow variables
