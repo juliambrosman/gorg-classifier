@@ -203,7 +203,7 @@ process lineage_counts {
     tuple val(sample), path(hits)
 
     output:
-    path("${sample}_lineage_counts.txt")
+    path("${sample}_tax_counts.txt")
 
     script:
     template 'lineage_counts.py'
@@ -212,7 +212,6 @@ process lineage_counts {
 process summarize_annotations {
     tag "$sample"
     publishDir path: "${params.outdir}/summaries"
-    memory '32 GB'
 
     input:
     tuple val(sample), path(hits)
